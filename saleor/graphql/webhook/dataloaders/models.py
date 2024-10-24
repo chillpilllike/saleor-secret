@@ -111,7 +111,7 @@ class WebhooksByEventTypeLoader(DataLoader):
                     events_types_by_webhook_id_map=events_types_by_webhook_id_map,
                     webhooks=webhooks,
                 ):
-                    apps_by_id = {app.id: app for app in apps}
+                    apps_by_id = {app.id: app for app in apps if app}
                     webhooks_by_event_type_map = calculate_webhooks_for_multiple_events(
                         set_event_types,
                         apps_by_id,
