@@ -20,7 +20,7 @@ class Migration(migrations.Migration):
                     ("kg", "kg"),
                     ("tonne", "Tonne"),
                 ],
-                default="kg",
+                default="lb",
                 max_length=30,
             ),
         ),
