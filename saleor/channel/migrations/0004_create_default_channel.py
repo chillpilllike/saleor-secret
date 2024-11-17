@@ -8,8 +8,8 @@ def create_default_channel(apps, schema_editor):
         Channel.objects.create(
             name="Default Channel",
             slug="default-channel",
-            currency_code="USD",
-            default_country="US",
+            currency_code="AUD",
+            default_country="AU",
             is_active=True,
         )
 
