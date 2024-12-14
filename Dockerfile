@@ -8,7 +8,7 @@ WORKDIR /app
 
 # Get PNPM version from package.json
 
-COPY package.json pnpm-lock.yaml ./
+#COPY package.json pnpm-lock.yaml ./
 
 RUN corepack enable
 RUN corepack prepare pnpm@9.6.0 --activate
