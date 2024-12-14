@@ -36,7 +36,7 @@ ENV NEXT_PUBLIC_STOREFRONT_URL=${NEXT_PUBLIC_STOREFRONT_URL}
 RUN export PNPM_VERSION=$(cat package.json | jq '.engines.pnpm' | sed -E 's/[^0-9.]//g')
 RUN yarn global add pnpm@$PNPM_VERSION
 
-RUN pnpm build
+RUN pnpm build-schema
 
 # Production image, copy all the files and run next
 FROM base AS runner
