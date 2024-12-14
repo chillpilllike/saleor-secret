@@ -6,11 +6,12 @@ FROM base AS deps
 RUN apk add --no-cache libc6-compat
 WORKDIR /app
 
-COPY . .
+
 
 # Get PNPM version from package.json
 RUN export PNPM_VERSION=$(cat package.json | jq '.engines.pnpm' | sed -E 's/[^0-9.]//g')
 
+COPY . . 
 COPY package.json pnpm-lock.yaml ./
 RUN yarn global add pnpm@$PNPM_VERSION
 RUN pnpm i --frozen-lockfile --prefer-offline
