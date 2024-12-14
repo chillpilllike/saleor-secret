@@ -37,7 +37,7 @@ ENV NEXT_PUBLIC_STOREFRONT_URL=${NEXT_PUBLIC_STOREFRONT_URL}
 RUN corepack enable
 RUN corepack prepare pnpm@9.6.0 --activate
 
-RUN yarn build
+RUN yarn build --no-lint
 
 # Production image, copy all the files and run next
 FROM base AS runner
