@@ -13,7 +13,7 @@ WORKDIR /app
 RUN corepack enable
 RUN corepack prepare pnpm@9.6.0 --activate
 # RUN yarn global add pnpm@9.6.0
-RUN pnpm i --frozen-lockfile --prefer-offline
+#RUN pnpm i --frozen-lockfile --prefer-offline
 
 # Rebuild the source code only when needed
 FROM base AS builder
