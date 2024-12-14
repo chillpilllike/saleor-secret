@@ -11,15 +11,14 @@ WORKDIR /app
 # Get PNPM version from package.json
 RUN export PNPM_VERSION=$(cat package.json | jq '.engines.pnpm' | sed -E 's/[^0-9.]//g')
 
-COPY . . 
-COPY package.json pnpm-lock.yaml ./
+#COPY package.json pnpm-lock.yaml ./
 RUN yarn global add pnpm@$PNPM_VERSION
-RUN pnpm i --frozen-lockfile --prefer-offline
+# RUN pnpm i --frozen-lockfile --prefer-offline
 
 # Rebuild the source code only when needed
 FROM base AS builder
 WORKDIR /app
-COPY --from=deps /app/node_modules ./node_modules
+# COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
 # Next.js collects completely anonymous telemetry data about general usage.
