@@ -10,8 +10,6 @@ WORKDIR /app
 # Clone the repository
 RUN git clone https://github.com/saleor/storefront.git /app
 
-# Copy and set up environment variables
-RUN cp .env /app/.env
 
 # Install pnpm globally
 RUN corepack enable
