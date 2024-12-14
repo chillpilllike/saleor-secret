@@ -7,18 +7,16 @@ RUN apk add --no-cache libc6-compat
 WORKDIR /app
 
 # Get PNPM version from package.json
+RUN export PNPM_VERSION=$(cat package.json | jq '.engines.pnpm' | sed -E 's/[^0-9.]//g')
 
-#COPY package.json pnpm-lock.yaml ./
-
-RUN corepack enable
-RUN corepack prepare pnpm@9.6.0 --activate
-# RUN yarn global add pnpm@9.6.0
-#RUN pnpm i --frozen-lockfile --prefer-offline
+COPY package.json pnpm-lock.yaml ./
+RUN yarn global add pnpm@$PNPM_VERSION
+RUN pnpm i --frozen-lockfile --prefer-offline
 
 # Rebuild the source code only when needed
 FROM base AS builder
 WORKDIR /app
-#COPY --from=deps /app/node_modules ./node_modules
+COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
 # Next.js collects completely anonymous telemetry data about general usage.
@@ -33,9 +31,8 @@ ARG NEXT_PUBLIC_STOREFRONT_URL
 ENV NEXT_PUBLIC_STOREFRONT_URL=${NEXT_PUBLIC_STOREFRONT_URL}
 
 # Get PNPM version from package.json
-#cRUN yarn global add pnpm@9.6.0
-RUN corepack enable
-RUN corepack prepare pnpm@9.6.0 --activate
+RUN export PNPM_VERSION=$(cat package.json | jq '.engines.pnpm' | sed -E 's/[^0-9.]//g')
+RUN yarn global add pnpm@$PNPM_VERSION
 
 RUN pnpm build
 
