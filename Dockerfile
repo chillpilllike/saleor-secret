@@ -6,31 +6,41 @@ FROM base AS deps
 RUN apk add --no-cache libc6-compat
 WORKDIR /app
 
-# Enable and prepare PNPM
+# Enable PNPM
 RUN corepack enable
 RUN corepack prepare pnpm@9.6.0 --activate
 
 FROM base AS builder
 WORKDIR /app
 
-# Install Python and virtualenv
+# Install Python, pip, and virtualenv
 RUN apk add --no-cache python3 py3-pip py3-virtualenv
 
 # Create and activate a virtual environment
 RUN python3 -m venv /opt/venv
 ENV PATH="/opt/venv/bin:$PATH"
 
-# Copy all project files including requirements.txt
-COPY . .
+# First copy only the requirements file to install dependencies
+COPY requirements.txt ./
 
 # Install Python dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Re-enable PNPM in this stage, as environment differs between stages
+# Now copy the rest of the application
+COPY . .
+
+# Set environment variables for Next.js
+ENV NEXT_OUTPUT=standalone
+ARG NEXT_PUBLIC_SALEOR_API_URL
+ENV NEXT_PUBLIC_SALEOR_API_URL=${NEXT_PUBLIC_SALEOR_API_URL}
+ARG NEXT_PUBLIC_STOREFRONT_URL
+ENV NEXT_PUBLIC_STOREFRONT_URL=${NEXT_PUBLIC_STOREFRONT_URL}
+
+# Re-enable PNPM for this stage
 RUN corepack enable
 RUN corepack prepare pnpm@9.6.0 --activate
 
-# Run the schema build command which uses `python manage.py get_graphql_schema`
+# Build the GraphQL schema using the Django manage.py command
 RUN pnpm build-schema
 
 # Production image
@@ -56,6 +66,7 @@ RUN chown nextjs:nodejs .next
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 
+# Switch to non-root user
 USER nextjs
 
 # Start the application
